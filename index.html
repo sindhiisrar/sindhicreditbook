@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="sd" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سنڌي کاتو بڪ</title>
+    <style>
+        body {
+            font-family: 'Noto Nastaliq Urdu', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #1a3c34;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Noto Nastaliq Urdu', sans-serif;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #1a3c34;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #14524a;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        #output {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #1a3c34;
+            color: white;
+        }
+        .credit { color: #27ae60; }
+        .debit { color: #c0392b; }
+        .delete-btn {
+            background-color: #c0392b;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+        }
+        .delete-btn:hover {
+            background-color: #a93226;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .form-container { padding: 15px; }
+            input, select, button { font-size: 0.9rem; }
+            button { width: 100%; }
+            .button-group { flex-direction: column; }
+            th, td { padding: 8px; font-size: 0.85rem; }
+            .delete-btn { padding: 3px 8px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>سنڌي کاتو بڪ</h1>
+        <div class="form-container">
+            <form id="creditForm">
+                <div class="form-group">
+                    <label for="name">نالو:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">رقم:</label>
+                    <input type="number" id="amount" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">قسم:</label>
+                    <select id="type" name="type">
+                        <option value="credit">اڌار</option>
+                        <option value="debit">قرض</option>
+                    </select>
+                </div>
+                <button type="submit">شامل ڪريو</button>
+            </form>
+        </div>
+        <div class="button-group">
+            <button onclick="showPrintView()">شيٽ ڏسو</button>
+            <button onclick="exportToCSV()">گوگل شيٽس لاءِ ڊائونلوڊ ڪريو</button>
+        </div>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // Load existing data from localStorage
+        let transactions = JSON.parse(localStorage.getItem('creditBook')) || [];
+
+        // Handle form submission
+        document.getElementById('creditForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const amount = document.getElementById('amount').value;
+            const type = document.getElementById('type').value;
+            const date = new Date().toLocaleString('sd-PK');
+
+            transactions.push({ name, amount, type, date });
+            localStorage.setItem('creditBook', JSON.stringify(transactions));
+
+            document.getElementById('creditForm').reset();
+            document.getElementById('output').innerText = 'ڊيٽا شامل ڪئي وئي!';
+        });
+
+        // Show print view with delete buttons
+        function showPrintView() {
+            if (transactions.length === 0) {
+                document.getElementById('output').innerText = 'ڪوبه ڊيٽا ناهي!';
+                return;
+            }
+            let html = '<h2>پرنٽ ويو</h2><table><tr><th>نالو</th><th>رقم</th><th>قسم</th><th>تاريخ</th><th>ختم</th></tr>';
+            transactions.forEach((row, index) => {
+                const typeClass = row.type === 'credit' ? 'credit' : 'debit';
+                html += `<tr><td>${row.name}</td><td class="${typeClass}">${row.amount}</td><td>${row.type === 'credit' ? 'اڌار' : 'قرض'}</td><td>${row.date}</td><td><button class="delete-btn" onclick="deleteTransaction(${index})">ختم ڪريو</button></td></tr>`;
+            });
+            html += '</table>';
+            document.getElementById('output').innerHTML = html;
+        }
+
+        // Delete a transaction
+        function deleteTransaction(index) {
+            if (confirm('ڇا توهان هن ڊيٽا کي ختم ڪرڻ چاهيو ٿا؟')) {
+                transactions.splice(index, 1); // Remove the transaction at the given index
+                localStorage.setItem('creditBook', JSON.stringify(transactions));
+                showPrintView(); // Refresh the table
+            }
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (transactions.length === 0) {
+                alert('ڪوبه ڊيٽا ناهي ته ڊائونلوڊ ڪجي!');
+                return;
+            }
+            let csv = 'نالو,رقم,قسم,تاريخ\n';
+            transactions.forEach(row => {
+                csv += `${row.name},${row.amount},${row.type === 'credit' ? 'اڌار' : 'قرض'},${row.date}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'سنڌي کاتو بڪ.csv';
+            link.click();
+        }
+    </script>
+</body>
+<footer style="text-align: center; padding: 20px; color: #666; font-size: 0.9rem; margin-top: 20px;">
+    © 2025 سنڌي کاتو بڪ - جميع حق محفوظ - ٺاهيندڙ: اسرار سنڌي - رابطو: <a href="mailto:israrsindhi01@gmail.com" style="color: #1a3c34; text-decoration: none;">israrsindhi01@gmail.com</a>
+</footer>
+</html>
