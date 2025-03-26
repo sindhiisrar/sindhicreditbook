@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سنڌي کاتو بڪ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Katibeh', sans-serif;
+            font-family: Katibeh, Lateef;
             margin: 0;
             padding: 20px;
             background-color: #f4f6f9;
             color: #333;
+            font-size: 1.3rem;
         }
         .container {
             max-width: 900px;
@@ -20,7 +22,7 @@
             text-align: center;
             color: #1a3c34;
             margin-bottom: 20px;
-            font-size: 2rem;
+            font-size: 2.3rem;
         }
         .form-container {
             background: #fff;
@@ -36,15 +38,16 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            font-size: 1.3rem;
         }
         input, select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            box-sizing: border-box;
-            font-family: 'Katibeh', sans-serif;
-            font-size: 1rem;
+            box-sizing: border-box; 
+            font-family: Katibeh, Lateef;
+            font-size: 1.3rem;
         }
         button {
             background-color: #1a3c34;
@@ -53,8 +56,9 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.3rem;
             margin: 5px 0;
+            font-family: Katibeh, Lateef;
         }
         button:hover {
             background-color: #14524a;
@@ -94,7 +98,29 @@
         .delete-btn:hover {
             background-color: #a93226;
         }
-
+        /* Hide delete buttons when printing */
+      @media print {
+            body * {
+                visibility: hidden; /* Hide everything by default */
+            }
+            #output, #output * {
+                visibility: visible; /* Show only the output div and its contents */
+            }
+            #output {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .delete-btn {
+                display: none; /* Hide delete buttons in print */
+            }
+            h2 {
+                text-align: center; /* Center the "پرنٽ ويو" title */
+            }
+        }
         /* Responsive Design */
         @media (max-width: 600px) {
             h1 { font-size: 1.5rem; }
@@ -104,6 +130,14 @@
             .button-group { flex-direction: column; }
             th, td { padding: 8px; font-size: 0.85rem; }
             .delete-btn { padding: 3px 8px; font-size: 0.8rem; }
+        }
+        footer {
+            font-family: 'Lateef', sans-serif;
+            font-size: 1.2rem;
+            color: #333;
+            text-align: center;
+            padding: 10px;
+            background-color: #f4f6f9;
         }
     </style>
 </head>
@@ -132,6 +166,7 @@
         </div>
         <div class="button-group">
             <button onclick="showPrintView()">شيٽ ڏسو</button>
+            <button onclick="printSheet()">پرنٽ ڪريو</button> <!-- New Print Button -->
             <button onclick="exportToCSV()">گوگل شيٽس لاءِ ڊائونلوڊ ڪريو</button>
         </div>
         <div id="output"></div>
@@ -180,6 +215,14 @@
             }
         }
 
+        function printSheet() {
+            if (transactions.length === 0) {
+                alert('ڪوبه ڊيٽا ناهي ته پرنٽ ڪجي!');
+                return;
+            }
+            showPrintView(); // Display the table
+            window.print(); // Trigger print dialog
+        }
         // Export to CSV
         function exportToCSV() {
             if (transactions.length === 0) {
@@ -198,7 +241,7 @@
         }
     </script>
 </body>
-<footer style="text-align: center; padding: 20px; color: #666; font-size: 0.9rem; margin-top: 20px;">
+<footer>
     © 2025 سنڌي کاتو بڪ - جميع حق محفوظ - ٺاهيندڙ: اسرار سنڌي - رابطو: <a href="mailto:israrsindhi01@gmail.com" style="color: #1a3c34; text-decoration: none;">israrsindhi01@gmail.com</a>
 </footer>
 </html>
