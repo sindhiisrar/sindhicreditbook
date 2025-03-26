@@ -131,6 +131,16 @@
             th, td { padding: 8px; font-size: 0.85rem; }
             .delete-btn { padding: 3px 8px; font-size: 0.8rem; }
         }
+        .message {
+            text-align: center;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            color: #1a3c34;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
         footer {
             font-family: 'Lateef', sans-serif;
             font-size: 1.2rem;
@@ -188,13 +198,13 @@
             localStorage.setItem('creditBook', JSON.stringify(transactions));
 
             document.getElementById('creditForm').reset();
-            document.getElementById('output').innerText = 'ڊيٽا شامل ڪئي وئي!';
+            document.getElementById('output').innerHTML = '<div class="message">ڊيٽا شامل ڪئي وئي!</div>';
         });
 
         // Show print view with delete buttons
         function showPrintView() {
             if (transactions.length === 0) {
-                document.getElementById('output').innerText = 'ڪوبه ڊيٽا ناهي!';
+                document.getElementById('output').innerHTML = '<div class="message">ڪوبه ڊيٽا ناهي!</div>';
                 return;
             }
             let html = '<h2>پرنٽ ويو</h2><table><tr><th>نالو</th><th>رقم</th><th>قسم</th><th>تاريخ</th><th>ختم</th></tr>';
@@ -209,20 +219,22 @@
         // Delete a transaction
         function deleteTransaction(index) {
             if (confirm('ڇا توهان هن ڊيٽا کي ختم ڪرڻ چاهيو ٿا؟')) {
-                transactions.splice(index, 1); // Remove the transaction at the given index
+                transactions.splice(index, 1);
                 localStorage.setItem('creditBook', JSON.stringify(transactions));
-                showPrintView(); // Refresh the table
+                showPrintView();
             }
         }
 
+        // Print only the table
         function printSheet() {
             if (transactions.length === 0) {
                 alert('ڪوبه ڊيٽا ناهي ته پرنٽ ڪجي!');
                 return;
             }
-            showPrintView(); // Display the table
-            window.print(); // Trigger print dialog
+            showPrintView();
+            window.print();
         }
+
         // Export to CSV
         function exportToCSV() {
             if (transactions.length === 0) {
